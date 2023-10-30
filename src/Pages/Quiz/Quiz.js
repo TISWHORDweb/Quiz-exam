@@ -188,66 +188,76 @@ const Quiz = () => {
         },
     ];
 
-    const [currentQuestion, setCurrentQuestion] = useState(0);
-    const [userAnswers, setUserAnswers] = useState(Array(questionsData.length).fill(0));
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [selectedAnswers, setSelectedAnswers] = useState([]);
     const [score, setScore] = useState(0);
-    const [timer, setTimer] = useState(30);
+    const [timeLeft, setTimeLeft] = useState(30);
 
+    // const questionsData = [
+    //     {
+    //         question: "What is your favorite color?",
+    //         answers: [{ answer1: "Dog" }, { answer2: "Cat" }, { answer3: "Bird" }, { answer4: "Rabbit" }],
+    //         correctAnswer: "answer2",
+    //     },
+    //     // Add more questions here
+    // ];
 
-    const handleNext = () => {
-        if (currentQuestion < questionsData.length - 1) {
-            setCurrentQuestion(currentQuestion + 1);
+    const handleAnswerClick = (answer) => {
+        if (!selectedAnswers[currentQuestionIndex]) {
+            setSelectedAnswers((prev) => {
+                const updatedAnswers = [...prev];
+                updatedAnswers[currentQuestionIndex] = answer;
+                return updatedAnswers;
+            });
         }
     };
 
-    const handlePrevious = () => {
-        if (currentQuestion > 0) {
-            setCurrentQuestion(currentQuestion - 1);
-        }
+    const calculateScore = () => {
+        let tempScore = 0;
+        selectedAnswers.forEach((selectedAnswer, index) => {
+            if (selectedAnswer === questionsData[index].correctAnswer) {
+                tempScore += 10;
+            }
+        });
+        return tempScore;
     };
 
-    const handleAnswerClick = (selectedAnswer) => {
-        const newAnswers = [...userAnswers];
-        if (questionsData[currentQuestion].correctAnswer === selectedAnswer) {
-            setScore(score + 10);
-        }
-        newAnswers[currentQuestion] = 1;
-        setUserAnswers(newAnswers);
-    };
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            if (timer > 0) {
-                setTimer(timer - 1);
+        const timer = setTimeout(() => {
+            if (timeLeft > 0) {
+                setTimeLeft((prev) => prev - 1);
             } else {
-                clearInterval(interval);
-                // Logic for quiz end
+                alert("The quiz has finished!");
+                // Calculate and display the score
+                const finalScore = calculateScore();
+                alert(`Your final score is ${finalScore}`);
             }
         }, 1000);
-        return () => clearInterval(interval);
-    }, [timer]);
+        return () => clearTimeout(timer);
+    }, [timeLeft]);
+
+    const handleNextQuestion = () => {
+        if (currentQuestionIndex < questionsData.length - 1) {
+            setCurrentQuestionIndex((prev) => prev + 1);
+        }
+    };
 
     return (
         <div>
-            <h2>{questionsData[currentQuestion].question}</h2>
-            <ul>
-                {questionsData[currentQuestion].answers.map((answer, index) => (
-                    <li key={index} onClick={() => handleAnswerClick(`answer${index + 1}`)}>
-                        {Object.values(answer)}
-                    </li>
-                ))}
-            </ul>
-            <p>Time left: {timer} seconds</p>
-            <p>Score: {score}</p>
-            <button onClick={handlePrevious} disabled={currentQuestion === 0}>
-                Previous
-            </button>
-            <button onClick={handleNext} disabled={currentQuestion === questionsData.length - 1}>
-                Next
-            </button>
+            <h2>Question {currentQuestionIndex + 1}</h2>
+            <p>{questionsData[currentQuestionIndex].question}</p>
+            {questionsData[currentQuestionIndex].answers.map((answer, index) => (
+                <button key={index} onClick={() => handleAnswerClick(`answer${index + 1}`)}>
+                    {answer[`answer${index + 1}`]}
+                </button>
+            ))}
+            <button onClick={handleNextQuestion}>Next Question</button>
+            <p>Time left: {timeLeft} seconds</p>
         </div>
     );
 };
+
 
 export default Quiz;
 
