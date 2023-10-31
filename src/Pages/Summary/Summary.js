@@ -1,24 +1,19 @@
 import React from 'react'
 import Img1 from '../../Assets/img/img (2).png'
+import Navbar from '../../components/Navbar2'
 
 function Summary() {
     return (
         <div>
-            <div class="third">
+            <div class="summary">
                 <div class="col-md-12">
-                    <div class="nav">
-                        <h2 class=""><a href="/">LumenVeritas</a>  </h2>
-                        <ul>
-                            <li><a href="">About Us</a></li>
-                            <li><a href="">Contact</a></li>
-                        </ul>
-                    </div>
+                    <Navbar />
                     <div class="container">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="textt mt-5">
-                                    <h2>WELCOME <span id="namy"></span></h2>
-                                    <h2>From <span id="schooly"></span></h2>
+                                    <h2>WELCOME Emmanuel</h2>
+                                    <h2>From Rework</h2>
                                     <p>Congrats you've been registered to this year 2022 Quiz competition, you can start anytime from now </p>
                                     <p>Read this instructions carefully :</p>
                                     <ul>
